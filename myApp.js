@@ -126,8 +126,24 @@ const removeManyPeople = (done) => {
 
   Person.remove({ name: nameToRemove }, (err, result) => {
     if (err) return done(err);
-    done(null, result); // result es un JSON con info de la operación
+    done(null, result);
   });
+};
+
+// ----------------------------------------------------
+// 10. Query Chain
+// ----------------------------------------------------
+const queryChain = (done) => {
+  const foodToSearch = "burrito";
+
+  Person.find({ favoriteFoods: foodToSearch }) // filtrar por comida
+    .sort({ name: 1 })                        // ordenar por nombre ascendente
+    .limit(2)                                 // limitar a 2 documentos
+    .select("-age")                           // ocultar el campo age
+    .exec((err, data) => {                    // ejecutar la query
+      if (err) return done(err);
+      done(null, data);
+    });
 };
 
 
@@ -141,5 +157,7 @@ exports.findEditThenSave = findEditThenSave;
 exports.findAndUpdate = findAndUpdate;
 exports.removeById = removeById;
 exports.removeManyPeople = removeManyPeople;
+exports.queryChain = queryChain;
+
 
 
