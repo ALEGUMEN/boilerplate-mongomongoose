@@ -97,16 +97,25 @@ const findEditThenSave = (personId, done) => {
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
 
-  // findOneAndUpdate recibe: filtro, actualización, opciones, callback
   Person.findOneAndUpdate(
-    { name: personName },       // filtro
-    { age: ageToSet },          // actualización
-    { new: true },              // opción: devuelve el documento actualizado
+    { name: personName },
+    { age: ageToSet },
+    { new: true },
     (err, updatedDoc) => {
       if (err) return done(err);
       done(null, updatedDoc);
     }
   );
+};
+
+// ----------------------------------------------------
+// 8. Eliminar una persona por ID
+// ----------------------------------------------------
+const removeById = (personId, done) => {
+  Person.findByIdAndRemove(personId, (err, removedDoc) => {
+    if (err) return done(err);
+    done(null, removedDoc);
+  });
 };
 
 
@@ -118,3 +127,5 @@ exports.findOneByFood = findOneByFood;
 exports.findPersonById = findPersonById;
 exports.findEditThenSave = findEditThenSave;
 exports.findAndUpdate = findAndUpdate;
+exports.removeById = removeById;
+
