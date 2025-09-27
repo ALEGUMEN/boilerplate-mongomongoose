@@ -1,19 +1,19 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 
+// 1. Connect to MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 });
 
-// Define schema
+// 2. Define the schema and model
 const personSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
   age: Number,
   favoriteFoods: [String],
 });
 
-// Create model
 const Person = mongoose.model("Person", personSchema);
 
 // ----------------------------------------------------
@@ -62,8 +62,20 @@ const findOneByFood = (food, done) => {
   });
 };
 
+// ----------------------------------------------------
+// 5. Find Person by ID
+// ----------------------------------------------------
+const findPersonById = (personId, done) => {
+  Person.findById(personId, (err, data) => {
+    if (err) return done(err);
+    return done(null, data);
+  });
+};
+
+
 exports.PersonModel = Person;
 exports.createAndSavePerson = createAndSavePerson;
 exports.createManyPeople = createManyPeople;
 exports.findPeopleByName = findPeopleByName;
 exports.findOneByFood = findOneByFood;
+exports.findPersonById = findPersonById;
