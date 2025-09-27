@@ -118,6 +118,18 @@ const removeById = (personId, done) => {
   });
 };
 
+// ----------------------------------------------------
+// 9. Eliminar muchas personas por nombre
+// ----------------------------------------------------
+const removeManyPeople = (done) => {
+  const nameToRemove = "Mary";
+
+  Person.remove({ name: nameToRemove }, (err, result) => {
+    if (err) return done(err);
+    done(null, result); // result es un JSON con info de la operación
+  });
+};
+
 
 exports.PersonModel = Person;
 exports.createAndSavePerson = createAndSavePerson;
@@ -128,4 +140,6 @@ exports.findPersonById = findPersonById;
 exports.findEditThenSave = findEditThenSave;
 exports.findAndUpdate = findAndUpdate;
 exports.removeById = removeById;
+exports.removeManyPeople = removeManyPeople;
+
 
