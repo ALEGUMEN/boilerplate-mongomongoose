@@ -42,9 +42,10 @@ const createManyPeople = (arrayOfPeople, done) => {
 
 // --- FIND BY NAME ---
 const findPeopleByName = (personName, done) => {
-  Person.find({ name: personName }, (err, data) => {
+  // Find all people whose name matches personName
+  Person.find({ name: personName }, (err, people) => {
     if (err) return done(err);
-    done(null, data);
+    done(null, people);
   });
 };
 
