@@ -7,11 +7,11 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true,
 });
 
-// 2. Definir el esquema y modelo
+// 2. Definir esquema y modelo
 const personSchema = new mongoose.Schema({
   name: { type: String, required: true },
   age: Number,
-  favoriteFoods: [String], // Array de Strings
+  favoriteFoods: [String],
 });
 
 const Person = mongoose.model("Person", personSchema);
@@ -78,20 +78,35 @@ const findPersonById = (personId, done) => {
 const findEditThenSave = (personId, done) => {
   const foodToAdd = "hamburger";
 
-  // 1. Buscar persona por ID
   Person.findById(personId, (err, person) => {
     if (err) return done(err);
     if (!person) return done(new Error("Person not found"));
 
-    // 2. Agregar "hamburger" a favoriteFoods
     person.favoriteFoods.push(foodToAdd);
 
-    // 3. Guardar cambios
     person.save((err, updatedPerson) => {
       if (err) return done(err);
       done(null, updatedPerson);
     });
   });
+};
+
+// ----------------------------------------------------
+// 7. Buscar por nombre y actualizar edad a 20
+// ----------------------------------------------------
+const findAndUpdate = (personName, done) => {
+  const ageToSet = 20;
+
+  // findOneAndUpdate recibe: filtro, actualización, opciones, callback
+  Person.findOneAndUpdate(
+    { name: personName },       // filtro
+    { age: ageToSet },          // actualización
+    { new: true },              // opción: devuelve el documento actualizado
+    (err, updatedDoc) => {
+      if (err) return done(err);
+      done(null, updatedDoc);
+    }
+  );
 };
 
 
@@ -102,3 +117,4 @@ exports.findPeopleByName = findPeopleByName;
 exports.findOneByFood = findOneByFood;
 exports.findPersonById = findPersonById;
 exports.findEditThenSave = findEditThenSave;
+exports.findAndUpdate = findAndUpdate;
