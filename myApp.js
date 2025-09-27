@@ -16,18 +16,19 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model("Person", personSchema);
 
-// 3. Funciones pedidas en los retos
+
 
 const createAndSavePerson = (done) => {
+  
   const person = new Person({
-    name: "John Doe",
-    age: 25,
-    favoriteFoods: ["pizza", "pasta"],
+    name: "John Doe",              
+    age: 25,                       
+    favoriteFoods: ["pizza", "pasta"] 
   });
 
   person.save((err, data) => {
     if (err) return done(err);
-    done(null, data);
+    done(null, data);  
   });
 };
 
