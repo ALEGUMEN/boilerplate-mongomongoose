@@ -1,138 +1,70 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
+// Import mongoose
+const mongoose = require("mongoose");
 
-// 1. Connect to MongoDB Atlas
-mongoose.connect(process.env.MONGO_URI, {
+// Connect to MongoDB
+mongoose.connect("mongodb://localhost:27017/peopleDB", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-// 2. Define the schema and model
+// Define schema
 const personSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: String,
   age: Number,
   favoriteFoods: [String],
 });
 
+// Create model
 const Person = mongoose.model("Person", personSchema);
 
-// 3. Functions for the challenges
-
-// --- CREATE ONE ---
+// ----------------------------------------------------
+// 1. Create and Save a Person
+// ----------------------------------------------------
 const createAndSavePerson = (done) => {
   const person = new Person({
-    name: "John Doe",
+    name: "John",
     age: 25,
-    favoriteFoods: ["pizza", "pasta"],
+    favoriteFoods: ["Pizza", "Burger"],
   });
 
   person.save((err, data) => {
     if (err) return done(err);
-    done(null, data);
+    return done(null, data);
   });
 };
 
-// --- CREATE MANY ---
+// ----------------------------------------------------
+// 2. Create Many People
+// ----------------------------------------------------
 const createManyPeople = (arrayOfPeople, done) => {
   Person.create(arrayOfPeople, (err, data) => {
     if (err) return done(err);
-    done(null, data);
+    return done(null, data);
   });
 };
 
-// --- FIND BY NAME ---
+// ----------------------------------------------------
+// 3. Find People by Name
+// ----------------------------------------------------
 const findPeopleByName = (personName, done) => {
-  // Find all people whose name matches personName
-  Person.find({ name: personName }, (err, people) => {
+  Person.find({ name: personName }, (err, data) => {
     if (err) return done(err);
-    done(null, people);
+    return done(null, data);
   });
 };
 
-// --- FIND ONE BY FOOD ---
+// ----------------------------------------------------
+// 4. Find One by Favorite Food
+// ----------------------------------------------------
 const findOneByFood = (food, done) => {
   Person.findOne({ favoriteFoods: food }, (err, data) => {
     if (err) return done(err);
-    done(null, data);
+    return done(null, data);
   });
 };
 
-// --- FIND BY ID ---
-const findPersonById = (personId, done) => {
-  Person.findById(personId, (err, data) => {
-    if (err) return done(err);
-    done(null, data);
-  });
-};
-
-// --- FIND, EDIT THEN SAVE ---
-const findEditThenSave = (personId, done) => {
-  const foodToAdd = "hamburger";
-  Person.findById(personId, (err, person) => {
-    if (err) return done(err);
-    if (!person) return done(new Error("Person not found"));
-
-    person.favoriteFoods.push(foodToAdd);
-    person.save((err, updatedPerson) => {
-      if (err) return done(err);
-      done(null, updatedPerson);
-    });
-  });
-};
-
-// --- FIND AND UPDATE ---
-const findAndUpdate = (personName, done) => {
-  const ageToSet = 20;
-  Person.findOneAndUpdate(
-    { name: personName },
-    { age: ageToSet },
-    { new: true },
-    (err, updatedDoc) => {
-      if (err) return done(err);
-      done(null, updatedDoc);
-    }
-  );
-};
-
-// --- REMOVE BY ID ---
-const removeById = (personId, done) => {
-  Person.findByIdAndRemove(personId, (err, removedDoc) => {
-    if (err) return done(err);
-    done(null, removedDoc);
-  });
-};
-
-// --- REMOVE MANY ---
-const removeManyPeople = (done) => {
-  const nameToRemove = "Mary";
-  Person.deleteMany({ name: nameToRemove }, (err, result) => {
-    if (err) return done(err);
-    done(null, result);
-  });
-};
-
-// --- QUERY CHAIN ---
-const queryChain = (done) => {
-  const foodToSearch = "burrito";
-  Person.find({ favoriteFoods: foodToSearch })
-    .sort({ name: 1 })   // ascending order
-    .limit(2)            // only 2 results
-    .select("-age")      // exclude age field
-    .exec((err, data) => {
-      if (err) return done(err);
-      done(null, data);
-    });
-};
-
-//----- **DO NOT EDIT BELOW THIS LINE** ----------------------------------
 exports.PersonModel = Person;
 exports.createAndSavePerson = createAndSavePerson;
+exports.createManyPeople = createManyPeople;
 exports.findPeopleByName = findPeopleByName;
 exports.findOneByFood = findOneByFood;
-exports.findPersonById = findPersonById;
-exports.findEditThenSave = findEditThenSave;
-exports.findAndUpdate = findAndUpdate;
-exports.createManyPeople = createManyPeople;
-exports.removeById = removeById;
-exports.removeManyPeople = removeManyPeople;
-exports.queryChain = queryChain;
